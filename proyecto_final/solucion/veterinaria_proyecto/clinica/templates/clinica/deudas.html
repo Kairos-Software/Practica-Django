@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Deudas{% endblock %}
+{% block contenido %}
+<h1>Visitas sin pagar <small>(total: ${{ total|floatformat:2 }})</small></h1>
+<table>
+    <tr><th>Fecha</th><th>Mascota</th><th>Dueño</th><th>Costo</th><th></th></tr>
+    {% for v in visitas %}
+    <tr>
+        <td>{{ v.fecha|date:"d/m/Y" }}</td>
+        <td><a href="{% url 'clinica:mascota' v.mascota.pk %}">{{ v.mascota.nombre }}</a></td>
+        <td><a href="{% url 'clinica:duenio' v.mascota.duenio.pk %}">{{ v.mascota.duenio.nombre }}</a> · {{ v.mascota.duenio.telefono }}</td>
+        <td>${{ v.costo }}</td>
+        <td>
+            <form method="post" action="{% url 'clinica:pagada' v.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="desde" value="deudas">
+                <button>Marcar pagada</button>
+            </form>
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">¡Nadie debe nada! 🎉</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

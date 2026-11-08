@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block titulo %}Dueños{% endblock %}
+{% block contenido %}
+<div class="titulo-con-boton">
+    <h1>Dueños</h1>
+    <a href="{% url 'clinica:crear_duenio' %}" class="boton">+ Dueño</a>
+</div>
+<form method="get" class="filtros">
+    <input type="search" name="q" value="{{ q }}" placeholder="Nombre o teléfono">
+    <button>Buscar</button>
+    {% if q %}<a href="{% url 'clinica:duenios' %}">Limpiar</a>{% endif %}
+</form>
+<table>
+    <tr><th>Nombre</th><th>Teléfono</th><th>Mascotas</th><th>Debe</th></tr>
+    {% for d in page_obj %}
+    <tr>
+        <td><a href="{% url 'clinica:duenio' d.pk %}">{{ d.nombre }}</a></td>
+        <td>{{ d.telefono }}</td>
+        <td>{{ d.cantidad }}</td>
+        <td>{% if d.deuda %}<span class="rojo">${{ d.deuda|floatformat:2 }}</span>{% else %}—{% endif %}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No hay dueños{% if q %} con «{{ q }}»{% endif %}.</td></tr>
+    {% endfor %}
+</table>
+{% if page_obj.has_other_pages %}
+<p class="paginas">
+    {% if page_obj.has_previous %}<a href="?q={{ q|urlencode }}&page={{ page_obj.previous_page_number }}">← Anterior</a>{% endif %}
+    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+    {% if page_obj.has_next %}<a href="?q={{ q|urlencode }}&page={{ page_obj.next_page_number }}">Siguiente →</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

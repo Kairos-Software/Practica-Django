@@ -1,0 +1,14 @@
+{% extends "libros/base.html" %}
+{% block titulo %}Entrar{% endblock %}
+{% block contenido %}
+{# Este template lo busca la vista de login de Django: registration/login.html #}
+<h1>Entrar</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {# next: a dónde volver después de entrar (la página que querías ver) #}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button>Entrar</button>
+</form>
+<p>¿No tenés cuenta? <a href="{% url 'registro' %}">Registrate</a></p>
+{% endblock %}

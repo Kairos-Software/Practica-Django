@@ -1,0 +1,18 @@
+{% extends "libros/base.html" %}
+{% block titulo %}{{ autor.nombre }}{% endblock %}
+{% block contenido %}
+<h1>{{ autor.nombre }}</h1>
+{% if autor.foto %}<img src="{{ autor.foto.url }}" alt="Foto de {{ autor.nombre }}" width="150">{% endif %}
+<p>
+    {{ autor.pais|default:"País desconocido" }}
+    {% if autor.nacimiento %} · nació el {{ autor.nacimiento|date:"d/m/Y" }}{% endif %}
+</p>
+<h2>Sus libros</h2>
+<ul>
+    {% for libro in libros %}
+    <li><a href="{% url 'libros:detalle' libro.pk %}">{{ libro.titulo }}</a> ({{ libro.anio }})</li>
+    {% empty %}
+    <li>No tiene libros cargados.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

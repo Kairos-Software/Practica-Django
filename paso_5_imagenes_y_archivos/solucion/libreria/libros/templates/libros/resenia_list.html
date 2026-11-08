@@ -1,0 +1,13 @@
+{% extends "libros/base.html" %}
+{% block titulo %}Mis reseñas{% endblock %}
+{% block contenido %}
+{# El nombre de este archivo es el que busca ListView sola: <app>/<modelo>_list.html #}
+<h1>Mis reseñas</h1>
+<ul>
+    {% for r in object_list %}
+    <li><a href="{% url 'libros:detalle' r.libro.pk %}">{{ r.libro.titulo }}</a> · {{ r.puntaje }}/5 — {{ r.texto }}</li>
+    {% empty %}
+    <li>Todavía no opinaste de ningún libro.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

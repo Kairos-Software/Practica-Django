@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Hola, {{ user.first_name|default:user.username }} 👋</h1>
+
+<div class="numeros">
+    <div><strong>{{ total_mascotas }}</strong>mascotas</div>
+    <div><strong>{{ visitas_del_mes }}</strong>visitas este mes</div>
+    <div><strong>${{ cobrado_del_mes|floatformat:2 }}</strong>cobrado este mes</div>
+    <div class="{% if deuda_total %}alerta{% endif %}"><strong>${{ deuda_total|floatformat:2 }}</strong><a href="{% url 'clinica:deudas' %}">sin cobrar</a></div>
+</div>
+
+<div class="dos-columnas">
+    <section>
+        <h2>Por especie</h2>
+        <ul>
+            {% for especie, cantidad in por_especie %}<li>{{ especie }}: {{ cantidad }}</li>
+            {% empty %}<li>Todavía no hay mascotas.</li>{% endfor %}
+        </ul>
+        <a href="{% url 'clinica:crear_mascota' %}" class="boton">+ Mascota</a>
+        <a href="{% url 'clinica:crear_duenio' %}" class="boton">+ Dueño</a>
+    </section>
+    <section>
+        <h2>Últimas visitas</h2>
+        <ul>
+            {% for v in ultimas %}
+            <li><a href="{% url 'clinica:mascota' v.mascota.pk %}">{{ v.mascota.nombre }}</a> ({{ v.mascota.duenio }}) · {{ v.fecha|date:"d/m" }} · {{ v.motivo }}</li>
+            {% empty %}<li>Todavía no hay visitas.</li>{% endfor %}
+        </ul>
+    </section>
+</div>
+{% endblock %}

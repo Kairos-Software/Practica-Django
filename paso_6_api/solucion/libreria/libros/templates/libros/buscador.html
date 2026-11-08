@@ -1,0 +1,38 @@
+{% extends "libros/base.html" %}
+{% block titulo %}Buscador{% endblock %}
+{% block contenido %}
+<h1>Buscador en vivo</h1>
+<p>Escribí: los resultados cambian sin recargar la página. (F12 → Red: vas a ver cada pedido a la API.)</p>
+<input id="buscar" placeholder="Título del libro..." autocomplete="off">
+<ul id="resultados"></ul>
+
+<script>
+// Las direcciones las arma Django (así, si cambian en urls.py, el JavaScript sigue andando)
+const API = "{% url 'libros:api_libros' %}";
+const DETALLE = "{% url 'libros:detalle' 0 %}";      // "/libros/0/": después se cambia el 0 por el id
+
+async function buscar() {
+    const texto = document.getElementById('buscar').value;
+    const respuesta = await fetch(API + '?q=' + encodeURIComponent(texto));   // pedirle los libros a la API
+    const datos = await respuesta.json();                                    // el JSON -> un objeto
+    const lista = document.getElementById('resultados');
+    lista.innerHTML = '';                                                    // vaciar la lista
+    if (datos.cantidad === 0) {
+        lista.innerHTML = '<li>No hay libros con eso.</li>';
+        return;
+    }
+    for (const libro of datos.libros) {
+        const li = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = DETALLE.replace('0', libro.id);
+        link.textContent = libro.titulo;                 // textContent: seguro (no interpreta HTML)
+        li.appendChild(link);
+        li.appendChild(document.createTextNode(' — ' + libro.autor + ' — $' + libro.precio));
+        lista.appendChild(li);
+    }
+}
+
+document.getElementById('buscar').addEventListener('input', buscar);   // cada vez que escriben
+buscar();                                                              // la primera vez: todos
+</script>
+{% endblock %}

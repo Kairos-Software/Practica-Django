@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block titulo %}Mascotas{% endblock %}
+{% block contenido %}
+<div class="titulo-con-boton">
+    <h1>Mascotas <small>({{ pagina.paginator.count }})</small></h1>
+    <a href="{% url 'clinica:crear_mascota' %}" class="boton">+ Mascota</a>
+</div>
+
+<form method="get" class="filtros">
+    <input type="search" name="q" value="{{ q }}" placeholder="Nombre de la mascota o del dueño">
+    <select name="especie">
+        <option value="">Todas las especies</option>
+        {% for valor, texto in especies %}<option value="{{ valor }}" {% if especie == valor %}selected{% endif %}>{{ texto }}</option>{% endfor %}
+    </select>
+    <button>Filtrar</button>
+    {% if q or especie %}<a href="{% url 'clinica:mascotas' %}">Limpiar</a>{% endif %}
+</form>
+
+<div class="grilla">
+    {% for m in pagina %}
+    <a class="tarjeta" href="{% url 'clinica:mascota' m.pk %}">
+        {% if m.foto %}<img src="{{ m.foto.url }}" alt="">{% else %}<span class="sin-foto">🐾</span>{% endif %}
+        <strong>{{ m.nombre }}</strong>
+        <span>{{ m.get_especie_display }}{% if m.raza %} · {{ m.raza }}{% endif %}</span>
+        <span>de {{ m.duenio.nombre }}</span>
+    </a>
+    {% empty %}
+    <p>No hay mascotas con esos filtros.</p>
+    {% endfor %}
+</div>
+
+{% if pagina.has_other_pages %}
+<p class="paginas">
+    {% if pagina.has_previous %}<a href="?{{ filtros }}&pagina={{ pagina.previous_page_number }}">← Anterior</a>{% endif %}
+    Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}
+    {% if pagina.has_next %}<a href="?{{ filtros }}&pagina={{ pagina.next_page_number }}">Siguiente →</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

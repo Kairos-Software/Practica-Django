@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo %}{{ duenio.nombre }}{% endblock %}
+{% block contenido %}
+<h1>{{ duenio.nombre }}</h1>
+<p>
+    📞 {{ duenio.telefono }}
+    {% if duenio.email %} · ✉ {{ duenio.email }}{% endif %}
+    {% if duenio.direccion %} · 📍 {{ duenio.direccion }}{% endif %}
+</p>
+<p>{% if duenio.deuda %}<span class="rojo">Debe ${{ duenio.deuda|floatformat:2 }}</span>{% else %}No debe nada.{% endif %}</p>
+<p>
+    <a href="{% url 'clinica:editar_duenio' duenio.pk %}">Editar</a> ·
+    <a href="{% url 'clinica:borrar_duenio' duenio.pk %}" class="rojo">Borrar</a>
+</p>
+
+<div class="titulo-con-boton">
+    <h2>Sus mascotas</h2>
+    {# initial: el formulario de mascota arranca con este dueño elegido #}
+    <a href="{% url 'clinica:crear_mascota' %}?duenio={{ duenio.pk }}" class="boton">+ Agregar mascota</a>
+</div>
+<ul>
+    {% for m in duenio.mascotas.all %}
+    <li><a href="{% url 'clinica:mascota' m.pk %}">{{ m.nombre }}</a> · {{ m.get_especie_display }} · {{ m.edad }}</li>
+    {% empty %}
+    <li>No tiene mascotas cargadas.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

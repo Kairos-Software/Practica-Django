@@ -1,0 +1,24 @@
+{% extends "libros/base.html" %}
+{% block titulo %}{{ libro.titulo }}{% endblock %}
+{% block contenido %}
+<h1>{{ libro.titulo }}</h1>
+<ul>
+    <li>Autor: <a href="{% url 'libros:autor' libro.autor.pk %}">{{ libro.autor.nombre }}</a></li>
+    <li>Año: {{ libro.anio }}</li>
+    <li>Precio: ${{ libro.precio }}</li>
+    <li>Stock: {% if libro.hay_stock %}{{ libro.stock }}{% else %}<span class="rojo">Sin stock</span>{% endif %}</li>
+    <li>¿Se vende? {{ libro.disponible|yesno:"Sí,No" }}</li>
+    <li>Cargado el {{ libro.cargado|date:"d/m/Y H:i" }}</li>
+</ul>
+
+<form method="post" action="{% url 'libros:vender' libro.pk %}">
+    {% csrf_token %}
+    {{ vender_form.cantidad.label_tag }} {{ vender_form.cantidad }}
+    <button>Vender</button>
+</form>
+
+<p>
+    <a href="{% url 'libros:editar' libro.pk %}">Editar</a> ·
+    <a href="{% url 'libros:borrar' libro.pk %}" class="rojo">Borrar</a>
+</p>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block titulo %}{% if object %}Editar dueño{% else %}Nuevo dueño{% endif %}{% endblock %}
+{% block contenido %}
+<h1>{% if object %}Editar a {{ object.nombre }}{% else %}Nuevo dueño{% endif %}</h1>
+{% include "clinica/_campos.html" %}
+{% endblock %}

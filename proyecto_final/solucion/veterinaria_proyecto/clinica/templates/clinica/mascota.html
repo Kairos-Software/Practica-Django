@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block titulo %}{{ mascota.nombre }}{% endblock %}
+{% block contenido %}
+<div class="ficha">
+    {% if mascota.foto %}<img src="{{ mascota.foto.url }}" alt="Foto de {{ mascota.nombre }}">{% endif %}
+    <div>
+        <h1>{{ mascota.nombre }}</h1>
+        <p>
+            {{ mascota.get_especie_display }}{% if mascota.raza %} · {{ mascota.raza }}{% endif %} · {{ mascota.edad }}<br>
+            Dueño: <a href="{% url 'clinica:duenio' mascota.duenio.pk %}">{{ mascota.duenio.nombre }}</a> · 📞 {{ mascota.duenio.telefono }}
+        </p>
+        <p>Vacunas: {% for v in mascota.vacunas.all %}<span class="chip">{{ v }}</span> {% empty %}ninguna cargada{% endfor %}</p>
+        <p>
+            <a href="{% url 'clinica:editar_mascota' mascota.pk %}">Editar</a> ·
+            <a href="{% url 'clinica:borrar_mascota' mascota.pk %}" class="rojo">Borrar</a> ·
+            <a href="{% url 'clinica:api_mascota' mascota.pk %}">Ver en JSON</a>
+        </p>
+    </div>
+</div>
+
+<h2>Historial de visitas <small>(total: ${{ total_gastado|floatformat:2 }})</small></h2>
+<table>
+    <tr><th>Fecha</th><th>Motivo</th><th>Costo</th><th>Atendió</th><th></th></tr>
+    {% for v in visitas %}
+    <tr>
+        <td>{{ v.fecha|date:"d/m/Y" }}</td>
+        <td>{{ v.motivo }}{% if v.diagnostico %}<br><small>{{ v.diagnostico }}</small>{% endif %}</td>
+        <td>${{ v.costo }}</td>
+        <td>{{ v.atendida_por|default:"—" }}</td>
+        <td>
+            {% if v.pagada %}✔ Pagada{% else %}
+            <form method="post" action="{% url 'clinica:pagada' v.pk %}">{% csrf_token %}<button>Marcar pagada</button></form>
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Todavía no vino nunca.</td></tr>
+    {% endfor %}
+</table>
+
+<h2>Cargar visita</h2>
+{# Este formulario se manda a esta misma página (la vista "mascota" atiende el POST) #}
+{% include "clinica/_campos.html" %}
+{% endblock %}

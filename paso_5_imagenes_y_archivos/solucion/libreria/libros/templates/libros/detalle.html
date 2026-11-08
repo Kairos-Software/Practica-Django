@@ -1,0 +1,49 @@
+{% extends "libros/base.html" %}
+{% block titulo %}{{ libro.titulo }}{% endblock %}
+{% block contenido %}
+<h1>{{ libro.titulo }}</h1>
+{% if libro.portada %}<img src="{{ libro.portada.url }}" alt="Portada de {{ libro.titulo }}" width="200">{% endif %}
+<ul>
+    <li>Autor: <a href="{% url 'libros:autor' libro.autor.pk %}">{{ libro.autor.nombre }}</a></li>
+    <li>Año: {{ libro.anio }}</li>
+    <li>Precio: ${{ libro.precio }}</li>
+    <li>Stock: {% if libro.hay_stock %}{{ libro.stock }}{% else %}<span class="rojo">Sin stock</span>{% endif %}</li>
+    <li>¿Se vende? {{ libro.disponible|yesno:"Sí,No" }}</li>
+    <li>Cargado el {{ libro.cargado|date:"d/m/Y H:i" }}</li>
+</ul>
+
+<form method="post" action="{% url 'libros:vender' libro.pk %}">
+    {% csrf_token %}
+    {{ vender_form.cantidad.label_tag }} {{ vender_form.cantidad }}
+    <button>Vender</button>
+</form>
+
+<p>
+    <a href="{% url 'libros:editar' libro.pk %}">Editar</a> ·
+    <a href="{% url 'libros:borrar' libro.pk %}" class="rojo">Borrar</a>
+</p>
+
+<h2>Reseñas {% if promedio %}(promedio {{ promedio|floatformat:1 }} de 5){% endif %}</h2>
+{% for r in resenias %}
+<div>
+    <strong>{{ r.usuario.username }}</strong> · {{ r.puntaje }}/5 · <small>{{ r.creada|date:"d/m/Y" }}</small>
+    <p>{{ r.texto|linebreaksbr }}</p>
+    {% if r.usuario == user %}
+    <form method="post" action="{% url 'libros:borrar_resenia' r.pk %}">{% csrf_token %}<button>Borrar mi reseña</button></form>
+    {% endif %}
+</div>
+{% empty %}
+<p>Todavía nadie opinó.</p>
+{% endfor %}
+
+{% if not user.is_authenticated %}
+    <p><a href="{% url 'login' %}?next={{ request.path }}">Entrá para opinar</a></p>
+{% elif not ya_opino %}
+    <h3>Tu reseña</h3>
+    <form method="post" action="{% url 'libros:resenia' libro.pk %}">
+        {% csrf_token %}
+        {{ resenia_form.as_p }}
+        <button>Opinar</button>
+    </form>
+{% endif %}
+{% endblock %}

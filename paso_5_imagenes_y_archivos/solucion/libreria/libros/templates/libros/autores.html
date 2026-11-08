@@ -1,0 +1,13 @@
+{% extends "libros/base.html" %}
+{% block titulo %}Autores{% endblock %}
+{% block contenido %}
+<h1>Autores</h1>
+<ul>
+    {% for autor in autores %}
+    {# pluralize: agrega "s" si el número no es 1 -> "1 libro", "2 libros" #}
+    <li><a href="{% url 'libros:autor' autor.pk %}">{{ autor.nombre }}</a> — {{ autor.cantidad }} libro{{ autor.cantidad|pluralize }}</li>
+    {% empty %}
+    <li>Todavía no hay autores.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

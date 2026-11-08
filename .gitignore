@@ -1,0 +1,24 @@
+# Entorno virtual (se crea con: python -m venv entorno)
+entorno/
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Bases de datos: las crea cada uno al ejecutar (db.sqlite3, clase3.sqlite3, libreria.db...)
+*.sqlite3
+*.sqlite3-journal
+*.db
+
+# Archivos subidos (imágenes, planillas)
+media/
+media_clase5/
+
+# Editor y sistema
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,9 @@
+/* Opcional: un poco de orden para que se lea cómodo. Sin este archivo todo funciona igual. */
+body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+nav { padding: .8rem 0; border-bottom: 2px solid #5b3a29; }
+nav a { margin-left: 1rem; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: .4rem; border-bottom: 1px solid #ddd; text-align: left; }
+.rojo { color: #b3261e; }
+.mensaje { background: #e3f1e5; padding: .5rem 1rem; }
+.mensaje.error { background: #fbe3e1; }

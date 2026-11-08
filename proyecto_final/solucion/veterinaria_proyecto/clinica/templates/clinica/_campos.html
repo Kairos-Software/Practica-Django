@@ -1,0 +1,14 @@
+{# Un PEDAZO de template que se reusa con {% include %} (el guión bajo es una costumbre: "no es una página") #}
+<form method="post" class="formulario" {% if con_archivos %}enctype="multipart/form-data"{% endif %}>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for campo in form %}
+    <div class="campo">
+        {{ campo.label_tag }}
+        {{ campo }}
+        {% for error in campo.errors %}<span class="rojo">{{ error }}</span>{% endfor %}
+    </div>
+    {% endfor %}
+    <button class="principal">Guardar</button>
+    <a href="javascript:history.back()">Cancelar</a>
+</form>

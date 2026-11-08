@@ -1,0 +1,12 @@
+{% extends "libros/base.html" %}
+{% block titulo %}Importar libros{% endblock %}
+{% block contenido %}
+<h1>Importar libros</h1>
+<p>Una planilla CSV separada por <b>;</b> con las columnas:</p>
+<pre>titulo;autor;precio;stock;anio</pre>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button>Importar</button>
+</form>
+{% endblock %}

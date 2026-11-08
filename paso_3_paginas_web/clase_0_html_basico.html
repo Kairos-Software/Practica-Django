@@ -1,0 +1,159 @@
+<!doctype html>
+<!--
+═══════════════════════════════════════════════════════════════════════
+ PASO 3 (primera parte) — HTML: LO MÍNIMO PARA DJANGO
+═══════════════════════════════════════════════════════════════════════
+ Abrilo con DOBLE CLIC (se abre en el navegador) y, al lado, abrilo con
+ el editor (VS Code) para leer el código. Cambiá algo, guardá y apretá F5
+ en el navegador para ver el cambio.
+
+ HTML no es un lenguaje de programación: no hace cuentas ni decide nada.
+ Solo dice QUÉ hay en la página (un título, una tabla, un formulario).
+ Las decisiones las toma Python (Django) ANTES de mandar la página.
+
+ Todo se escribe con ETIQUETAS:  <etiqueta>contenido</etiqueta>
+ Algunas no tienen cierre:  <br>  <img ...>  <input ...>
+ Las etiquetas pueden tener ATRIBUTOS:  <a href="direccion">texto</a>
+ Esto es un COMENTARIO: el navegador no lo muestra.
+-->
+<html lang="es">
+<head>
+    <!-- head: datos de la página que NO se ven adentro de ella -->
+    <meta charset="utf-8">   <!-- para que se vean bien los acentos y la ñ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">  <!-- para que el celular no la achique -->
+    <title>Mi primera página</title>    <!-- el texto de la pestaña -->
+    <!--
+        El <style> es CSS: el DISEÑO (colores, tamaños). Es OPCIONAL. Sin él la
+        página se ve "pelada" pero funciona igual. Estas 3 líneas solo la hacen
+        un poco más cómoda de leer. Si no te interesa el diseño, copialas tal
+        cual en tus páginas y listo.
+    -->
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 1rem auto; padding: 0 1rem; }
+        table, td, th { border: 1px solid #999; border-collapse: collapse; padding: .3rem .6rem; }
+    </style>
+</head>
+<body>
+    <!-- body: lo que SÍ se ve -->
+
+    <!-- ═══ 1) TEXTOS ═══ -->
+    <h1>Pizzería Don Pepe</h1>               <!-- título principal (uno por página) -->
+    <h2>1) Textos</h2>                       <!-- subtítulo (h2, h3... h6, cada vez más chicos) -->
+    <p>Esto es un párrafo. Los espacios y los Enter de más     se    ignoran.</p>
+    <p>Para cortar una línea<br>se usa br. Texto en <strong>negrita</strong> y en <em>cursiva</em>.</p>
+    <hr>                                     <!-- una línea horizontal -->
+
+    <!-- ═══ 2) LINKS ═══ -->
+    <h2>2) Links</h2>
+    <p><a href="https://www.djangoproject.com">Un link a otra página</a></p>
+    <p><a href="#formulario">Un link a otra parte de esta misma página</a> (al elemento con id="formulario")</p>
+    <!-- En Django los links a TUS páginas se escriben con {% url 'nombre' %} (paso 3) -->
+
+    <!-- ═══ 3) LISTAS ═══ -->
+    <h2>3) Listas</h2>
+    <ul>                                     <!-- ul = lista con puntos -->
+        <li>Muzzarella</li>                  <!-- li = cada ítem -->
+        <li>Napolitana</li>
+    </ul>
+    <ol>                                     <!-- ol = lista numerada -->
+        <li>Elegís la pizza</li>
+        <li>La pagás</li>
+    </ol>
+    <!-- En Django una lista se arma con un for:
+         <ul>{% for pizza in pizzas %}<li>{{ pizza.nombre }}</li>{% endfor %}</ul> -->
+
+    <!-- ═══ 4) TABLAS ═══ -->
+    <h2>4) Tablas</h2>
+    <table>
+        <tr>                                 <!-- tr = una fila -->
+            <th>Pizza</th><th>Precio</th>     <!-- th = celda de título -->
+        </tr>
+        <tr>
+            <td>Muzzarella</td><td>$9800</td>  <!-- td = celda común -->
+        </tr>
+        <tr>
+            <td>Fugazzeta</td><td>$12000</td>
+        </tr>
+    </table>
+
+    <!-- ═══ 5) IMÁGENES ═══ -->
+    <h2>5) Imágenes</h2>
+    <!-- src = de dónde sale la imagen; alt = el texto si no carga (y para los ciegos) -->
+    <img src="no-existe.jpg" alt="Foto de una pizza (esta no carga a propósito: se ve el alt)" width="200">
+
+    <!-- ═══ 6) FORMULARIOS: así el usuario le MANDA datos a tu programa ═══ -->
+    <h2 id="formulario">6) Formularios</h2>
+    <!--
+        <form> junta campos y los manda al apretar el botón.
+          action = A DÓNDE se mandan (una dirección). Vacío = a esta misma página.
+          method = CÓMO:
+             get  -> los datos van EN LA DIRECCIÓN:  pagina.html?nombre=Ana&gusto=muzza
+                     Para BUSCAR y FILTRAR (se puede guardar el link, apretar F5).
+             post -> los datos van "escondidos" en el pedido.
+                     Para GUARDAR, EDITAR o BORRAR algo. En Django lleva {% csrf_token %} adentro.
+        Cada campo necesita un NAME: es el nombre con el que llega el dato.
+        En Django lo leés con request.GET.get('nombre') o request.POST.get('nombre')
+        (aunque con los formularios de Django casi nunca lo hacés a mano).
+
+        PROBALO: llenalo y apretá "Pedir". Como action está vacío y es GET, la página se
+        vuelve a abrir y en la BARRA DE DIRECCIONES vas a ver lo que mandaste,
+        con cada name=valor. Eso es EXACTAMENTE lo que recibe Django.
+    -->
+    <form method="get" action="">
+        <p>
+            <label for="nombre">Tu nombre:</label>          <!-- label: el texto del campo (for = id del campo) -->
+            <input type="text" id="nombre" name="nombre" required placeholder="Ej: Ana">
+            <!-- required = el navegador no deja mandarlo vacío -->
+        </p>
+        <p>
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" id="cantidad" name="cantidad" min="1" max="10" value="1">
+            <!-- value = el valor que trae de entrada -->
+        </p>
+        <p>
+            <label for="gusto">Gusto:</label>
+            <select id="gusto" name="gusto">                <!-- select = desplegable -->
+                <option value="muzza">Muzzarella</option>   <!-- value = lo que se manda; el texto = lo que se ve -->
+                <option value="napo" selected>Napolitana</option>   <!-- selected = la elegida de entrada -->
+                <option value="fuga">Fugazzeta</option>
+            </select>
+        </p>
+        <p>
+            Tamaño:
+            <!-- radio = una opción entre varias (mismo name = mismo grupo) -->
+            <label><input type="radio" name="tamanio" value="chica"> Chica</label>
+            <label><input type="radio" name="tamanio" value="grande" checked> Grande</label>
+        </p>
+        <p>
+            <!-- checkbox = sí/no. Si NO está tildado, NO se manda nada -->
+            <label><input type="checkbox" name="envio" value="si"> Con envío</label>
+        </p>
+        <p>
+            <label for="fecha">¿Para cuándo?</label>
+            <input type="date" id="fecha" name="fecha">     <!-- el navegador muestra un calendario -->
+        </p>
+        <p>
+            <label for="nota">Aclaraciones:</label><br>
+            <textarea id="nota" name="nota" rows="3" cols="40"></textarea>   <!-- texto largo -->
+        </p>
+        <input type="hidden" name="origen" value="web">     <!-- hidden = se manda pero no se ve -->
+        <button type="submit">Pedir</button>              <!-- el botón que manda el formulario -->
+    </form>
+
+    <!--
+        Otros tipos de <input>:  email, password (se ve con puntitos), tel,
+        search, file (subir un archivo: el form necesita method="post" y
+        enctype="multipart/form-data").
+    -->
+
+    <!-- ═══ 7) BLOQUES PARA ORDENAR ═══ -->
+    <h2>7) Bloques</h2>
+    <div>
+        <!-- div = una "caja" sin significado, para agrupar cosas -->
+        <p>Un párrafo adentro de un div. <span>span = lo mismo, pero dentro de una línea.</span></p>
+    </div>
+    <!-- header, nav, main, footer: como div, pero dicen qué son (menú, contenido...) -->
+
+    <p><small>Fin del HTML. Ahora: clase.py (la parte de Django)</small></p>
+</body>
+</html>

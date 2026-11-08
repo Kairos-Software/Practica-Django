@@ -1,0 +1,29 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Inicio{% endblock %} · Patitas</title>
+    <link rel="stylesheet" href="{% static 'clinica/estilo.css' %}">
+</head>
+<body>
+    <header>
+        <a href="{% url 'clinica:inicio' %}" class="marca">🐾 Patitas</a>
+        {% if user.is_authenticated %}
+        <nav>
+            <a href="{% url 'clinica:mascotas' %}">Mascotas</a>
+            <a href="{% url 'clinica:duenios' %}">Dueños</a>
+            <a href="{% url 'clinica:deudas' %}">Deudas</a>
+        </nav>
+        <div class="usuario">
+            {{ user.get_full_name|default:user.username }}
+            <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Salir</button></form>
+        </div>
+        {% endif %}
+    </header>
+    <main>
+        {% for mensaje in messages %}<p class="mensaje {{ mensaje.tags }}">{{ mensaje }}</p>{% endfor %}
+        {% block contenido %}{% endblock %}
+    </main>
+</body>
+</html>

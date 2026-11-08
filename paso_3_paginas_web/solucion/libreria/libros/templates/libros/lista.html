@@ -1,0 +1,41 @@
+{% extends "libros/base.html" %}
+{% block titulo %}Libros{% endblock %}
+{% block contenido %}
+<h1>Libros</h1>
+
+<form method="get">
+    <input type="search" name="q" value="{{ q }}" placeholder="Buscar por título">
+    <select name="autor">
+        <option value="">Todos los autores</option>
+        {% for a in autores %}
+        {# autor_id viene como texto ("3") y a.pk es número: se comparan como texto #}
+        <option value="{{ a.pk }}" {% if autor_id == a.pk|stringformat:"d" %}selected{% endif %}>{{ a.nombre }}</option>
+        {% endfor %}
+    </select>
+    <button>Filtrar</button>
+    {% if q or autor_id %}<a href="{% url 'libros:lista' %}">Limpiar</a>{% endif %}
+</form>
+
+<table>
+    <tr><th>Título</th><th>Autor</th><th>Precio</th><th>Stock</th></tr>
+    {% for libro in pagina %}
+    <tr>
+        <td><a href="{% url 'libros:detalle' libro.pk %}">{{ libro.titulo }}</a></td>
+        <td>{{ libro.autor.nombre }}</td>
+        <td>${{ libro.precio }}</td>
+        <td>{% if libro.hay_stock %}{{ libro.stock }}{% else %}<span class="rojo">Sin stock</span>{% endif %}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No hay libros{% if q %} con «{{ q }}»{% endif %}.</td></tr>
+    {% endfor %}
+</table>
+
+{# "filtros" = la búsqueda actual sin la página: así no se pierde al cambiar de página #}
+{% if pagina.has_other_pages %}
+<p>
+    {% if pagina.has_previous %}<a href="?{{ filtros }}&pagina={{ pagina.previous_page_number }}">← Anterior</a>{% endif %}
+    Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}
+    {% if pagina.has_next %}<a href="?{{ filtros }}&pagina={{ pagina.next_page_number }}">Siguiente →</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

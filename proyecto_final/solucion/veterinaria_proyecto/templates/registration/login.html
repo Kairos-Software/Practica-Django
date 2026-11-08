@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block titulo %}Entrar{% endblock %}
+{% block contenido %}
+<div class="caja-login">
+    <h1>Entrar</h1>
+    <form method="post" class="formulario">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button class="principal">Entrar</button>
+    </form>
+    <p><small>¿No tenés usuario? Pedíselo al administrador.</small></p>
+</div>
+{% endblock %}

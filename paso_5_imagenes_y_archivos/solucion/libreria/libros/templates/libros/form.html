@@ -1,0 +1,12 @@
+{% extends "libros/base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block contenido %}
+<h1>{{ titulo }}</h1>
+{# Un solo template para crear/editar libros y crear autores: cada vista le manda su "titulo" #}
+{# enctype: SIN esto las imágenes no viajan al servidor #}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button>Guardar</button>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Librería{% endblock %}</title>
+    {# El CSS es opcional: sin esta línea la página funciona igual, solo se ve más "pelada" #}
+    <link rel="stylesheet" href="{% static 'libros/estilo.css' %}">
+</head>
+<body>
+    <nav>
+        <strong>📚 Librería</strong>
+        <a href="{% url 'libros:lista' %}">Libros</a>
+        <a href="{% url 'libros:autores' %}">Autores</a>
+        <a href="{% url 'libros:crear' %}">+ Libro</a>
+        <a href="{% url 'libros:crear_autor' %}">+ Autor</a>
+    </nav>
+    <main>
+        {% for mensaje in messages %}
+        <p class="mensaje {{ mensaje.tags }}">{{ mensaje }}</p>
+        {% endfor %}
+        {% block contenido %}{% endblock %}
+    </main>
+</body>
+</html>
