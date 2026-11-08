@@ -1,3 +1,8 @@
+# Mi avance en los ejercicios: queda solo en mi compu, no se sube.
+# (El repo guarda únicamente el curso limpio, para empezar de 0 cuando quiera.)
+mis_proyectos/
+mi_solucion.py
+
 # Entorno virtual (se crea con: python -m venv entorno)
 entorno/
 venv/
