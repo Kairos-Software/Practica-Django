@@ -1,6 +1,5 @@
 import csv
 import io
-from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -8,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.db import transaction
 from django.db.models import Avg, Count
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -221,12 +221,26 @@ def importar(request):
             return redirect("libros:importar")
         importados, errores = 0, []
         for numero, fila in enumerate(csv.DictReader(io.StringIO(texto), delimiter=";"), start=2):
+            # Cada fila se valida con el MISMO formulario de las páginas (todas sus reglas:
+            # precio mayor a 0, stock no negativo, año que no sea futuro...) y adentro de una
+            # transacción: si la fila está mal, se deshace todo lo de esa fila, incluido el
+            # autor que se haya creado para ella.
             try:
-                autor, _ = Autor.objects.get_or_create(nombre=fila["autor"].strip())
-                Libro.objects.create(titulo=fila["titulo"].strip(), autor=autor, precio=Decimal(fila["precio"]),
-                                     stock=int(fila["stock"]), anio=int(fila["anio"]))
+                nombre_autor = fila["autor"].strip()
+                if not nombre_autor:
+                    raise ValueError("Falta el autor.")
+                with transaction.atomic():
+                    autor, _ = Autor.objects.get_or_create(nombre=nombre_autor)
+                    form = LibroForm({"titulo": fila["titulo"], "autor": autor.pk, "precio": fila["precio"],
+                                      "stock": fila["stock"], "anio": fila["anio"], "disponible": True})
+                    if not form.is_valid():
+                        raise ValueError("La fila tiene datos mal.")    # sale del atomic: se deshace el autor
+                    form.save()
                 importados += 1
-            except (KeyError, ValueError, AttributeError, InvalidOperation):
+            except (KeyError, AttributeError, ValueError):
+                # KeyError: falta una columna en los títulos de la planilla.
+                # AttributeError: la fila tiene columnas de menos (el dato llega como None).
+                # ValueError: falta el autor, o el formulario rechazó algún dato.
                 errores.append(numero)
         messages.success(request, f"Se importaron {importados} libros.")
         if errores:

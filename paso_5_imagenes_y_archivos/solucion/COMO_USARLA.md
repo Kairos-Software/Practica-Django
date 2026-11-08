@@ -42,5 +42,16 @@ python manage.py test libros        # pasos 2 a 5 (55 pruebas)
 - **`get_or_create`** en importar: si el autor ya existe lo usa; si no, lo crea.
 - **Cada fila en su `try`**: una fila mala no frena las demás. Los errores se
   juntan y se muestran todos juntos al final.
-- **`Decimal(fila["precio"])`** y no `float`: es plata. Si el texto no es un
-  número, da `InvalidOperation`, que también se ataja.
+- **Cada fila se valida con `LibroForm`**, el mismo formulario de las páginas:
+  así la planilla cumple las mismas reglas (precio mayor a 0, stock no
+  negativo, año que no sea futuro, texto donde va un número...). Escribir
+  `Decimal(fila["precio"])` o `int(fila["stock"])` a mano deja pasar casos
+  como un stock negativo, que después rompe al guardar.
+- **`transaction.atomic()` por fila**: el autor se crea antes de validar el
+  libro (el formulario necesita su id). Si la fila está mal, el `raise
+  ValueError` sale del `atomic` y se deshace también ese autor: una fila
+  descartada no deja nada guardado a medias.
+- **Una fila con columnas de menos** (por ejemplo `Rayuela;Cortázar`): para
+  `csv.DictReader` las columnas que faltan valen `None`. Por eso se ataja
+  `AttributeError` (`None.strip()`), y si falta un dato del libro, el
+  formulario lo rechaza como campo obligatorio.

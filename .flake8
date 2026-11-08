@@ -1,0 +1,9 @@
+# Configuración de Flake8, la extensión de VS Code que subraya en rojo el
+# código que no sigue el estilo de Python.
+# Las clases del curso tienen líneas largas (por los comentarios) y algunos
+# "import" en el medio del archivo a propósito: estas reglas evitan que eso
+# se marque como error. (Igual, en tu código conviene escribir líneas cortas.)
+[flake8]
+max-line-length = 130
+extend-ignore = E402
+exclude = entorno,venv,.venv,migrations,__pycache__

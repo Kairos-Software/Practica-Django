@@ -25,6 +25,7 @@ Truco: escribí las primeras letras y apretá **Tab**: completa el nombre solo.
 
 Un **entorno virtual** es una "caja" con su propio Python y sus paquetes
 (Django, etc.). Así cada proyecto tiene sus versiones y no se mezclan.
+**Los pasos 0 y 1 no lo necesitan** (alcanza con Python); hace falta desde el paso 2.
 
 ```powershell
 cd "D:\Desktop\Aprender Django"
@@ -194,3 +195,23 @@ Cómo leer el resultado:
 Leé el error **de abajo hacia arriba**: la última línea dice qué pasó. Más
 arriba, buscá la primera línea que sea de TU código (no de `site-packages`):
 ahí está el problema.
+
+---
+
+## 8. Volver atrás un archivo del curso (git)
+
+El curso está guardado en git. Tu trabajo (`mis_proyectos/`, los
+`mi_solucion.py`, el `entorno`, las bases) **no** se guarda ahí: está en el
+`.gitignore` y queda solo en tu compu.
+
+```powershell
+cd "D:\Desktop\Aprender Django"
+git status                                  # ¿toqué algún archivo del curso? (si no dice nada, no)
+git restore paso_0_python\clase.py          # deja ESE archivo como era originalmente
+git restore .                               # deja TODOS los archivos del curso como eran
+                                            # (tu trabajo no se toca: git lo ignora)
+git pull                                    # trae las correcciones nuevas del curso, si las hay
+```
+
+Para empezar de cero en otra compu: `git clone` con la dirección del
+repositorio, y después "Preparar la compu" del `LEEME.md`.

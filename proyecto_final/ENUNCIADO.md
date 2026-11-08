@@ -12,6 +12,18 @@ comprobar", al final) y no sigas hasta que dé OK.
 > **mensajes** marcados en `código` tienen que ser exactamente esos: las
 > pruebas los buscan así. El CÓMO hacerlo lo decidís vos.
 
+Si no te acordás de algo, esto es lo que conviene repasar (las clases, no
+las soluciones):
+
+| Etapa | Repasá |
+|---|---|
+| 1. El proyecto | Paso 2 (PARTES A2 y A3), paso 4 (PARTE 3a: la carpeta `templates`), paso 5 (PARTE 2: `media`) |
+| 2. Los modelos | Paso 2 (PARTES A4 y B1), paso 4 (PARTES 1 y 2: choices y muchos a muchos), paso 5 (PARTE 3: imágenes), paso 0 (cuentas con fechas) |
+| 3. El admin | Paso 2 (PARTE A6) y paso 4 (PARTE 6) |
+| 4. Usuarios | Paso 4 (PARTE 3) |
+| 5. Las páginas | Paso 3 (todo), paso 4 (PARTE 5: vistas de clase), paso 2 (PARTE B6: sumas con `annotate` y `filter=Q(...)`) |
+| 5. La API | Paso 6 (PARTES 2 y 3) |
+
 ---
 
 ## Etapa 1 — El proyecto
